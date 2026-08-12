@@ -37,7 +37,8 @@ def add_order(chat_id: int, order_text: str, user_name: str = "ناشناس") ->
             "id": new_id,
             "text": order_text,
             "user": user_name,
-            "timestamp": datetime.now().strftime("%H:%M")
+            "timestamp": datetime.now().strftime("%H:%M"),
+            "group_id": chat_id  # ذخیره‌ی آیدی گروهی که سفارش ثبت شد
         })
         data[chat_key] = orders
         _save_data(data)
