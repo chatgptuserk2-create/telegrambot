@@ -8,6 +8,7 @@
 
 دستورات خصوصی (فقط DM):
   /start     - معرفی ربات
+  /setgroup  - تنظیم آیدی گروه دستی
   /setmenu   - آیتم جدید به منو اضافه کن
   /removemenu - آیتم از منو حذف کن
   /viewmenu  - نمایش منوی فعلی
@@ -409,6 +410,28 @@ async def message_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ خطایی رخ داد.")
 
 
+async def setgroup_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """تنظیم آیدی گروه دستی"""
+    if update.effective_chat.type != "private":
+        await update.message.reply_text("❌ این دستور فقط در پیام شخصی کار می‌کنه.")
+        return
+    
+    if not context.args or not context.args[0].lstrip('-').isdigit():
+        await update.message.reply_text(
+            "❌ لطفاً آیدی گروه رو بنویس.\n\nمثال: `/setgroup -1004343833443`",
+            parse_mode="Markdown"
+        )
+        return
+    
+    group_id = int(context.args[0])
+    set_group_id(group_id)
+    
+    await update.message.reply_text(
+        f"✅ گروه تنظیم شد!\n\nآیدی: `{group_id}`",
+        parse_mode="Markdown"
+    )
+
+
 # ---------- اجرای ربات ----------
 
 def main():
@@ -430,6 +453,7 @@ def main():
     app.add_handler(CommandHandler("open", open_command))
     app.add_handler(CommandHandler("ready", ready_command))
     app.add_handler(CommandHandler("message", message_command))
+    app.add_handler(CommandHandler("setgroup", setgroup_command))
     
     app.add_handler(MessageHandler(filters.PHOTO & filters.ChatType.PRIVATE, handle_image))
 
